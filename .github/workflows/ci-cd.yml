@@ -120,11 +120,4 @@ jobs:
       run: |
         echo "執行煙霧測試..."
         # 可以加入基本的健康檢查
-    
-    - name: 通知部署結果
-      uses: 8398a7/action-slack@v3
-      with:
-        status: ${{ job.status }}
-        channel: '#deployments'
-        webhook_url: ${{ secrets.SLACK_WEBHOOK }}
-      if: always()
+        echo "部署完成！"

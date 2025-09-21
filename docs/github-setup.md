@@ -52,9 +52,6 @@ git push -u origin main
 - **SONAR_TOKEN**: SonarCloud 的存取權杖
 - **CODECOV_TOKEN**: Codecov 的上傳權杖
 
-#### 通知設定（可選）
-- **SLACK_WEBHOOK**: Slack 通知的 Webhook URL
-
 ### 4. 建立 Docker Hub Repository
 
 1. 登入 [Docker Hub](https://hub.docker.com/)
@@ -74,11 +71,25 @@ git push -u origin main
    - ✅ Require status checks to pass before merging
    - ✅ Require branches to be up to date before merging
    - ✅ Include administrators
-5. 在 `Status checks` 中新增：
-   - `test`
-   - `build`
-   - `security-scan`
+
+5. **重要**: Status checks 設定說明
+   - 如果這是新的 repository，您可能還看不到 `Status checks` 選項
+   - Status checks 只有在 GitHub Actions 至少執行過一次後才會出現
+   - 暫時可以先跳過此步驟，等第一次 Actions 執行後再回來設定
+
 6. 點擊 `Create`
+
+### ⚠️ Status Checks 後續設定
+
+當您完成第一次 Pull Request 並且 GitHub Actions 執行後：
+
+1. 回到 `Settings` > `Branches` > 編輯剛建立的規則
+2. 在 `Status checks that are required` 部分會看到：
+   - `test (18.x)` 和 `test (16.x)` - 來自測試 job
+   - `build` - 來自建置 job  
+   - `security-scan` - 來自安全掃描 job
+3. 選擇您想要作為必要檢查的項目
+4. 點擊 `Save changes`
 
 ### 6. 啟用 GitHub Actions
 
@@ -125,12 +136,7 @@ GitHub Actions 預設是啟用的，但如果沒有：
 2. 將私鑰新增到 GitHub Secrets（命名為 `DEPLOY_SSH_KEY`）
 3. 修改 `.github/workflows/ci-cd.yml` 中的部署步驟
 
-### 9. 監控和通知設定
-
-#### Slack 通知設定：
-1. 在 Slack 中建立 Incoming Webhook
-2. 將 Webhook URL 新增到 GitHub Secrets
-3. CI/CD pipeline 會自動發送部署通知
+### 9. 監控設定
 
 #### 電子郵件通知：
 GitHub 預設會發送 workflow 失敗的通知到你的註冊信箱。
