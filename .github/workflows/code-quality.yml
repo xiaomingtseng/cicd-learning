@@ -1,0 +1,44 @@
+name: 程式碼品質檢查
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  code-quality:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout 程式碼
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0  # 需要完整歷史記錄進行 SonarCloud 分析
+    
+    - name: 設定 Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: 安裝依賴並執行測試
+      run: |
+        cd frontend && npm ci && npm run test:ci
+        cd ../backend && npm ci && npm test
+    
+    - name: SonarCloud 掃描
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    
+    - name: 檢查程式碼複雜度
+      run: |
+        npx complexity-report --format json --output complexity-report.json frontend/src backend/
+    
+    - name: 上傳複雜度報告
+      uses: actions/upload-artifact@v3
+      with:
+        name: complexity-report
+        path: complexity-report.json
