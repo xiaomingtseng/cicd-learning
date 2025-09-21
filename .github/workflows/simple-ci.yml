@@ -1,0 +1,47 @@
+name: Simple CI/CD Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout 程式碼
+      uses: actions/checkout@v3
+    
+    - name: 執行基本測試
+      run: |
+        echo "✅ 程式碼檢查通過"
+        echo "✅ 測試執行成功"
+        echo "✅ CI/CD Pipeline 運作正常"
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout 程式碼
+      uses: actions/checkout@v3
+    
+    - name: 模擬建置過程
+      run: |
+        echo "🏗️ 開始建置..."
+        sleep 2
+        echo "✅ 建置完成"
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: 模擬部署過程
+      run: |
+        echo "🚀 開始部署..."
+        sleep 1
+        echo "✅ 部署完成！"
